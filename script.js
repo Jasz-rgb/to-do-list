@@ -61,18 +61,32 @@ document.addEventListener("DOMContentLoaded", function () {
             editBtn.style.opacity = '0.5';
             editBtn.style.pointerEvents = 'none';
         }
+        function reorderTasks() {
+            const taskList = document.getElementById('task-list');
+            const tasks = Array.from(taskList.children);
+        
+            const incompleteTasks = tasks.filter(task => !task.classList.contains('completed'));
+            const completedTasks = tasks.filter(task => task.classList.contains('completed'));
+        
+            taskList.innerHTML = '';
+            [...incompleteTasks, ...completedTasks].forEach(task => taskList.appendChild(task));
+        }
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
                 li.classList.add('completed');
                 editBtn.disabled = true;
                 editBtn.style.opacity = '0.5';
                 editBtn.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    reorderTasks();
+                }, 500);
             }
             else {
                 li.classList.remove('completed');
                 editBtn.disabled = false;
                 editBtn.style.opacity = '1';
                 editBtn.style.pointerEvents = 'auto';
+                reorderTasks();
             }
             updateProgressBar();
             saveTaskToLocalStorage();
